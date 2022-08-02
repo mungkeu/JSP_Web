@@ -1,0 +1,26 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<body>
+
+<%
+	request.setCharacterEncoding("euc-kr");
+	
+	// 취미 부분은 별도로 읽어들어 다시 빈 클래스에 저장한다.
+	String[] hobby = request.getParameterValues("hobby");
+	// 배열에 있는 내용을 하나의 스트링으로 저장
+	String texthobby="";
+	
+	for(int i=0; i<hobby.length; i++){
+		texthobby += hobby[i] + " ";
+	}
+
+%>
+	<!-- useBean을 이용하여 한꺼번에 데이터를 받아온다. -->
+	<jsp:useBean id="mbean" class="model.MemberBean">
+		<jsp:setProperty name="mbean" property="*" /> <!-- 맵핑 시키시오 -->
+	</jsp:useBean>
+
+</body>
+</html>

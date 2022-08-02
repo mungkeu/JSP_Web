@@ -1,0 +1,44 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h2> 회원 가입 </h2>
+	<form action="" method="post">
+	<table width="500" border="1">
+	<tr height="50">
+		<td width="150" align="center"></td>
+		<td width="350" align="center"><input type="text" name="id" size="40" placeholder="id를 넣으세요">
+	</tr>
+	<tr height="50">
+		<td width="150" align="center"></td>
+		<td width="350" align="center"><input type="password" name="pass1" size="40" placeholder="비밀번호는 영문과 숫자만 넣어주세요.">
+	</tr>
+	<tr height="50">
+		<td width="150" align="center"></td>
+		<td width="350" align="center"><input type="text" name="id" size="40"
+	</tr>
+	<tr height="50">
+		<td width="150" align="center"></td>
+		<td width="350" align="center"><input type="text" name="id" size="40"
+	</tr>
+	<tr height="50">
+		<td width="150" align="center"></td>
+		<td width="350" align="center"><input type="text" name="id" size="40"
+	</tr>
+	<tr height="50">
+		<td width="150" align="center"></td>
+		<td width="350" align="center"><input type="text" name="id" size="40"
+	</tr>
+	<tr height="50">
+		<td width="150" align="center"></td>
+		<td width="350" align="center"><input type="text" name="id" size="40"
+	</tr>
+	</table>
+	</form>
+</body>
+</html>
