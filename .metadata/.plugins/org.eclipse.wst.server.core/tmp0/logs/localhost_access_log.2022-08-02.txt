@@ -15,3 +15,8 @@
 127.0.0.1 - - [02/Aug/2022:21:57:07 +0900] "GET / HTTP/1.1" 404 807
 0:0:0:0:0:0:0:1 - - [02/Aug/2022:21:57:07 +0900] "GET /DataBase/MemberJoin.jsp HTTP/1.1" 200 2576
 0:0:0:0:0:0:0:1 - - [02/Aug/2022:21:57:24 +0900] "POST /DataBase/MemberJoinProc.jsp HTTP/1.1" 200 183
+0:0:0:0:0:0:0:1 - - [02/Aug/2022:23:05:43 +0900] "GET /DataBase/MemberJoin.jsp HTTP/1.1" 200 2570
+0:0:0:0:0:0:0:1 - - [02/Aug/2022:23:06:01 +0900] "GET /DataBase/MemberJoin.jsp HTTP/1.1" 200 2576
+127.0.0.1 - - [02/Aug/2022:23:28:39 +0900] "GET / HTTP/1.1" 404 807
+0:0:0:0:0:0:0:1 - - [02/Aug/2022:23:28:40 +0900] "GET /DataBase/MemberJoin.jsp HTTP/1.1" 200 2576
+0:0:0:0:0:0:0:1 - - [02/Aug/2022:23:29:17 +0900] "POST /DataBase/MemberJoinProc.jsp HTTP/1.1" 200 184
