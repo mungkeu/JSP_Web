@@ -1,18 +1,24 @@
 package model;
 
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Vector;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+
+
 // 오라클 데이터 베이스에 연결하고 select, insert, update, delete 작업을 실행해주는 클래스
 public class MemberDAO {
 
 	// 오라클에 접속하는 소스를 작성
-	String id = "system";
-	String pass="oracle";
-	String url="jdbc:oracle:thin:@localhost:1521:XE"; // 접속 URL
+	//String id = "system";
+	//String pass="oracle";
+	//String url="jdbc:oracle:thin:@localhost:1521:XE"; // 접속 URL
 	
 	Connection con; // 데이터베이스에 접근할 수 있도록 설정
 	PreparedStatement pstmt; // 데이터 베이스에서 쿼리를 실행시켜주는 객체
@@ -20,14 +26,28 @@ public class MemberDAO {
 	
 	// 데이터 베이스에 접근할수 있도록 도와주는 메서드
 	public void getCon() {
+		// 커넥션풀을 이용하여 데이터 베이스에 접근
 		try {
-			// 1. 해당 데이터 베이스를 사용한다고 선언(클래스를 등록=오라클용을 사용)
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			// 2. 해당 데이터 베이스에 접속
-			con = DriverManager.getConnection(url,id,pass);
+			// 외부에서 데이터를 읽어들인다.
+			Context initctx = new InitialContext();
+			// 톰캣 서버에 정보를 담아놓은 곳으로 이동
+			Context envctx = (Context) initctx.lookup("java:comp/env");
+			// 데이터 소스 객체를 선언
+			DataSource ds = (DataSource) envctx.lookup("jdbc/pool");
+			// 데이터 소스를 기준으로 커넥션을 연결한다.
+			con = ds.getConnection();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+//		try {
+//			// 1. 해당 데이터 베이스를 사용한다고 선언(클래스를 등록=오라클용을 사용)
+//			Class.forName("oracle.jdbc.driver.OracleDriver");
+//			// 2. 해당 데이터 베이스에 접속
+//			con = DriverManager.getConnection(url,id,pass);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 	}
 	
 	// 데이터 베이스에 한사람의 회원 정보를 저장해주는 메서드
@@ -121,5 +141,58 @@ public class MemberDAO {
 		}
 		
 	return bean;
+	}
+	
+	// 한 회원의 패스워드값을 리턴하는 메서드 작성
+	public String getPass(String id) {
+		String pass = "";
+		
+		try {
+			getCon();
+			String sql = "SELECT pass1 FROM MEMBER WHERE id=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1,  id);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				pass = rs.getString(1);
+			}
+			con.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return pass;
+	}
+	
+	// 한 회원의 정보를 수정하는 메서드
+	public void updateMember(MemberBean bean) {
+		getCon();
+		try {
+			String sql = "UPDATE MEMBER SET email=?, tel=? where id=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1,  bean.getEmail());
+			pstmt.setString(2,  bean.getTel());
+			pstmt.setString(3,  bean.getId());
+			
+			pstmt.executeUpdate();
+			con.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	// 한 회원을 삭제하는 메서드 작성
+	public void deleteMember(String id)
+	{
+		getCon();
+		
+		try {
+			String sql = "DELETE FROM MEMBER WHERE id=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, id);
+			pstmt.executeUpdate();
+			con.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

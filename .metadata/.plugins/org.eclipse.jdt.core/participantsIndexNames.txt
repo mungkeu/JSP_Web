@@ -3,3 +3,5 @@ INDEX VERSION 1.131
 /JSP2/src/main/java
 /Users/songimyeong/Documents/workspace-sts-3.9.17.RELEASE/JSP_Web/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/3508013950.index
 /DataBase/src/main/java
+/Users/songimyeong/Documents/workspace-sts-3.9.17.RELEASE/JSP_Web/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/1983627318.index
+/CookieSession/src/main/java
