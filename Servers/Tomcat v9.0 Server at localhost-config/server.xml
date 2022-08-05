@@ -104,9 +104,14 @@
 
 				<!-- DataBase 프로젝트 커넥션풀 설정. -->
 				<Context docBase="DataBase" path="/DataBase" reloadable="true" source="org.eclipse.jst.jee.server:DataBase">
-					<Resource auth="Container" driverClassName="oracle.jdbc.driver.OracleDriver" loginTimeout="10" maxWait="5000" name="jdbc/pool" password="oracle" type="javax.sql.DataSource" url="jdbc:oracle:thin:@localhost:1521:xe" username="system"/>
+					<Resource auth="Container" driverClassName="com.mysql.cj.jdbc.Driver" maxWait="5000" name="jdbc/pool" password="1234" type="javax.sql.DataSource" url="jdbc:mysql://localhost:3306/jspbasic?autoReconnect=true" username="songimyeong"/> 
 				</Context>
-			<Context docBase="CookieSession" path="/CookieSession" reloadable="true" source="org.eclipse.jst.jee.server:CookieSession"/></Host>
+				<Context docBase="CookieSession" path="/CookieSession" reloadable="true" source="org.eclipse.jst.jee.server:CookieSession"/>
+				<Context docBase="JSP2" path="/JSP2" reloadable="true" source="org.eclipse.jst.jee.server:JSP2"/>
+			<Context docBase="Board" path="/Board" reloadable="true" source="org.eclipse.jst.jee.server:Board">
+				<Resource auth="Container" driverClassName="com.mysql.cj.jdbc.Driver" maxWait="5000" name="jdbc/pool" password="1234" type="javax.sql.DataSource" url="jdbc:mysql://localhost:3306/jspbasic?autoReconnect=true" username="songimyeong"/>
+			</Context>
+			</Host>
 		</Engine>
 	</Service>
 </Server>

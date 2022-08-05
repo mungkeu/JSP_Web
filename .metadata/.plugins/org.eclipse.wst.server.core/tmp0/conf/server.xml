@@ -104,9 +104,14 @@
 
 				<!-- DataBase 프로젝트 커넥션풀 설정. -->
 				<Context docBase="/Users/songimyeong/Documents/workspace-sts-3.9.17.RELEASE/JSP_Web/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/ROOT" path="" reloadable="false"/><Context docBase="/Users/songimyeong/Documents/workspace-sts-3.9.17.RELEASE/JSP_Web/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/DataBase" path="/DataBase" reloadable="true" source="org.eclipse.jst.jee.server:DataBase">
-					<Resource auth="Container" driverClassName="oracle.jdbc.driver.OracleDriver" loginTimeout="10" maxWait="5000" name="jdbc/pool" password="oracle" type="javax.sql.DataSource" url="jdbc:oracle:thin:@localhost:1521:xe" username="system"/>
+					<Resource auth="Container" driverClassName="com.mysql.cj.jdbc.Driver" maxWait="5000" name="jdbc/pool" password="1234" type="javax.sql.DataSource" url="jdbc:mysql://localhost:3306/jspbasic?autoReconnect=true" username="songimyeong"/> 
 				</Context>
-			<Context docBase="/Users/songimyeong/Documents/workspace-sts-3.9.17.RELEASE/JSP_Web/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/CookieSession" path="/CookieSession" reloadable="true" source="org.eclipse.jst.jee.server:CookieSession"/></Host>
+				<Context docBase="/Users/songimyeong/Documents/workspace-sts-3.9.17.RELEASE/JSP_Web/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/CookieSession" path="/CookieSession" reloadable="true" source="org.eclipse.jst.jee.server:CookieSession"/>
+				<Context docBase="/Users/songimyeong/Documents/workspace-sts-3.9.17.RELEASE/JSP_Web/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/JSP2" path="/JSP2" reloadable="true" source="org.eclipse.jst.jee.server:JSP2"/>
+			<Context docBase="/Users/songimyeong/Documents/workspace-sts-3.9.17.RELEASE/JSP_Web/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/Board" path="/Board" reloadable="true" source="org.eclipse.jst.jee.server:Board">
+				<Resource auth="Container" driverClassName="com.mysql.cj.jdbc.Driver" maxWait="5000" name="jdbc/pool" password="1234" type="javax.sql.DataSource" url="jdbc:mysql://localhost:3306/jspbasic?autoReconnect=true" username="songimyeong"/>
+			</Context>
+			</Host>
 		</Engine>
 	</Service>
 </Server>
