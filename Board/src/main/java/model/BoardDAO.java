@@ -3,10 +3,13 @@ package model;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Vector;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
+
+import sun.jvm.hotspot.ui.treetable.AbstractTreeTableModel;
 
 public class BoardDAO {
 
@@ -47,7 +50,8 @@ public class BoardDAO {
 				ref = rs.getInt(1) + 1; // 최대값에 +1을 더해서 글그룹을 설정
 			}
 			// 실제 게시글 전체 값을 테이블에 저장
-			String sql = "insert into board(writer, email, subject, password, reg_date, ref, re_step, re_level, readcount, content) values(?,?,?,?,now(),?,?,?,0,?)";
+			String sql = "insert into board(writer, email, subject, password, reg_date, ref, re_step, re_level, readcount, content) "
+					+ "values(?,?,?,?,now(),?,?,?,0,?)";
 			pstmt = con.prepareStatement(sql);
 			// ?에 값을 맵핑
 			pstmt.setString(1, bean.getWriter());
@@ -64,5 +68,211 @@ public class BoardDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		
+	}
+	
+	// 모든 게시글을 가져오는 메서드
+	public Vector<BoardBean> getAllBoard(int start, int end){
+		
+		// 리턴할 객체 생성
+		Vector<BoardBean> v = new Vector<>();
+		getCon();
+		
+		try {
+			String sql = "SELECT * FROM (SELECT A.*, @ROWNUM := @ROWNUM + 1 AS ROWNUM FROM  BOARD ORDER BY ref desc, Re_step asc, Re_level asc)A"
+					+ "WHERE (@ROWNUM:=0)=0 AND ROWNUM> ? AND ROWNUM <= ?";
+			pstmt = con.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				BoardBean bean = new BoardBean();
+				bean.setNum(rs.getInt(1));
+				bean.setWriter(rs.getString(2));
+				bean.setEmail(rs.getString(3));
+				bean.setSubject(rs.getString(4));
+				bean.setPassword(rs.getString(5));
+				bean.setReg_date(rs.getDate(6).toString());
+				bean.setRef(rs.getInt(7));
+				bean.setRe_step(rs.getInt(8));
+				bean.setRe_level(rs.getInt(9));
+				bean.setReadcount(rs.getInt(10));
+				bean.setContent(rs.getString(11));
+				v.add(bean);
+			}
+			con.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return v;
+	}
+
+	// BoardInfo 하나의 게시글을 리턴하는 메서드
+	public BoardBean getOneBoard(int num) {
+		
+		// 리턴타입 선언
+		BoardBean bean = new BoardBean();
+		getCon();
+		
+		try {
+			// 조회수 증가 쿼리
+			String readsql = "UPDATE BOARD SET readcount = readcount+1 where num=?";
+			pstmt = con.prepareStatement(readsql);
+			pstmt.setInt(1, num);
+			pstmt.executeUpdate();
+			
+			String sql = "SELECT * FROM BOARD WHERE num=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, num);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				bean.setNum(rs.getInt(1));
+				bean.setWriter(rs.getString(2));
+				bean.setEmail(rs.getString(3));
+				bean.setSubject(rs.getString(4));
+				bean.setPassword(rs.getString(5));
+				bean.setReg_date(rs.getDate(6).toString());
+				bean.setRef(rs.getInt(7));
+				bean.setRe_step(rs.getInt(8));
+				bean.setRe_level(rs.getInt(9));
+				bean.setReadcount(rs.getInt(10));
+				bean.setContent(rs.getString(11));
+				con.close();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return bean;
+	}
+
+	// 답변글이 저장되는 메서드
+	public void reWriteBoard(BoardBean bean) {
+		// 부모 글그룹과 글레벨 글스텝을 읽어들인다.
+		int ref = bean.getRef();
+		int re_step = bean.getRe_step();
+		int re_level = bean.getRe_level();
+		getCon();
+		try {
+			// 부모 글보다 큰 re_level의 값을 전부 1씩 증가시킨다.
+			String levelsql="update board set re_level=re_level+1 where ref=? and re_level > ?";
+			pstmt = con.prepareStatement(levelsql);
+			pstmt.setInt(1,  ref);
+			pstmt.setInt(2,  re_level);
+			pstmt.executeUpdate();
+			
+			// 답변글 데이터를 저장
+			String sql = "insert into board(writer, email, subject, password, reg_date, ref, re_step, re_level, readcount, content) "
+					+ "values(?,?,?,?,now(),?,?,?,0,?)";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, bean.getWriter());
+			pstmt.setString(2, bean.getEmail());
+			pstmt.setString(3, bean.getSubject());
+			pstmt.setString(4, bean.getPassword());
+			pstmt.setInt(5,  ref); // 부모의 ref값을 넣어준다.
+			pstmt.setInt(6,  re_step+1); // 답글이기에 부모 글의 re_step 1을 더해준다.
+			pstmt.setInt(7,  re_level+1);
+			pstmt.setString(8, bean.getContent());
+			pstmt.executeUpdate();
+			con.close();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	// boardupdate 하나의 게시글을 리턴
+	public BoardBean getOneUpdateBoard(int num) {
+		
+		// 리턴타입 선언
+		BoardBean bean = new BoardBean();
+		getCon();
+		
+		try {
+			String sql = "SELECT * FROM BOARD WHERE num=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, num);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				bean.setNum(rs.getInt(1));
+				bean.setWriter(rs.getString(2));
+				bean.setEmail(rs.getString(3));
+				bean.setSubject(rs.getString(4));
+				bean.setPassword(rs.getString(5));
+				bean.setReg_date(rs.getDate(6).toString());
+				bean.setRef(rs.getInt(7));
+				bean.setRe_step(rs.getInt(8));
+				bean.setRe_level(rs.getInt(9));
+				bean.setReadcount(rs.getInt(10));
+				bean.setContent(rs.getString(11));
+				con.close();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return bean;
+	}
+
+	// update와 delete시 필요한 패스워드 값을  리턴해주는 메서드
+	public String getPass(int num) {
+		String pass = "";
+		getCon();
+		try {
+			String sql = "SELECT password FROM BOARD WHERE num=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1,  num);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				pass = rs.getString(1);
+			}
+			con.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return pass;
+	}
+
+	// 하나의 게시글을 수정하는 메서드
+	public void updateBoard(BoardBean bean) {
+		getCon();
+		try {
+			String sql = "update board set subject=?, content=? where num=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, bean.getSubject());
+			pstmt.setString(2, bean.getContent());
+			pstmt.setInt(3, bean.getNum());
+			pstmt.executeUpdate();
+			con.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	// 하나의 게시글을 삭제하는 메서드
+	public void deleteBoard(int num) {
+		getCon();
+		try {
+			String sql = "delete from board where num=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, num);
+			pstmt.executeUpdate();
+			con.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	// 전체 글의 갯수를 리턴하는 메서드
+	public int getAllCount(){
+		getCon();
+		// 게시글 전체수를 저장하는 변수
+		int count = 0;
+		try {
+			String sql = "select count(*) from board";
+			pstmt = con.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				count = rs.getInt(1); // 전체 게시글 수
+			}
+			con.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return count;
 	}
 }
