@@ -78,9 +78,15 @@ public class BoardDAO {
 		getCon();
 		
 		try {
-			String sql = "SELECT * FROM (SELECT A.*, @ROWNUM := @ROWNUM + 1 AS ROWNUM FROM  BOARD ORDER BY ref desc, Re_step asc, Re_level asc)A"
-					+ "WHERE (@ROWNUM:=0)=0 AND ROWNUM> ? AND ROWNUM <= ?";
+			String sql = "SET @ROWNUM:=?";
+			pstmt=con.prepareStatement(sql);
+			pstmt.setInt(1, 0);
+			pstmt.executeUpdate();
+			
+			sql = "SELECT * FROM (SELECT A.*, @ROWNUM := @ROWNUM + 1 AS Rnum FROM (SELECT * FROM BOARD ORDER BY ref desc, Re_step asc)A)B WHERE Rnum >= ? AND Rnum <= ?;";
 			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, start);
+			pstmt.setInt(2, end);
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				BoardBean bean = new BoardBean();
