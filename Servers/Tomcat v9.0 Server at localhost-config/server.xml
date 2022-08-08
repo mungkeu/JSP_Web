@@ -111,7 +111,7 @@
 			<Context docBase="Board" path="/Board" reloadable="true" source="org.eclipse.jst.jee.server:Board">
 				<Resource auth="Container" driverClassName="com.mysql.cj.jdbc.Driver" maxWait="5000" name="jdbc/pool" password="1234" type="javax.sql.DataSource" url="jdbc:mysql://localhost:3306/jspbasic?autoReconnect=true" username="songimyeong"/>
 			</Context>
-			</Host>
+			<Context docBase="JSP3" path="/JSP3" reloadable="true" source="org.eclipse.jst.jee.server:JSP3"/></Host>
 		</Engine>
 	</Service>
 </Server>
